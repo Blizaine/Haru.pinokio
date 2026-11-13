@@ -12,8 +12,8 @@ You can also use Pinokio's **Download from URL** with `https://github.com/cockta
 
 ## Requirements
 
-- **Apple silicon Mac:** macOS 13 or later and at least 16 GB of memory. Uses MLX inference with Haru's browser interface.
-- **Windows or Linux:** an NVIDIA CUDA GPU and a compatible NVIDIA driver. Upstream estimates about 12 GB of VRAM; that is a GPU-memory estimate, not the complete system-memory requirement or a verified minimum for this launcher. Uses the upstream PyTorch web demo. UV selects the PyTorch backend for the detected driver.
+- **Apple silicon Mac:** macOS 13 or later, with 16 GB or more of unified memory recommended. Uses MLX inference with Haru's browser interface. Haru, macOS, and the browser share this memory pool, so memory capacity matters on Mac too. Actual Mac memory usage and the minimum requirement have not been measured.
+- **Windows or Linux:** an NVIDIA CUDA GPU and a compatible NVIDIA driver, with **16 GB VRAM recommended for headroom**. Upstream estimates about 12 GB of VRAM; a 12 GB GPU may work but could be tight and has not been verified with this launcher. Tested on a 20 GB GPU. Uses the upstream PyTorch web demo. UV selects the PyTorch backend for the detected driver.
 - **System memory:** host RAM and virtual memory are also needed during model loading. The Windows path has been verified with 28 GB of RAM and the machine's existing system-managed paging file. The minimum host-memory requirement has not been measured.
 - Allow roughly 10 GB for the model, plus space for dependencies. Installation uses Pinokio's AI bundle and an isolated Python environment.
 - A microphone, headphones, and a reference voice clip: one speaker, 3 seconds to 3 minutes of clean speech. Haru ships without voice clips. Use a voice you have permission to use.
@@ -139,7 +139,9 @@ Verified on Apple silicon with Python 3.10 against Haru commit `d3612b02037d0f10
 - Static web client, nine language configurations, invalid request handling, platform command generation, menu states, and captured URL.
 - Windows and Linux CUDA dependency resolution in dry runs. Linux GPU execution and live microphone capture remain untested.
 
-Also verified on a Windows Shadow PC with 28 GB RAM, an NVIDIA RTX A4500 (20 GB VRAM), PyTorch `2.14.1+cu132`, and CUDA 13.2: the complete model loaded on `cuda:0` and completed the upstream warm-up with the memory-efficient initializer. Windows settings were unchanged. A small-model regression check confirmed exact checkpoint values, buffers, and forward outputs match the normal initializer, and initialization hooks restore after success and exceptions. The approximate 12 GB VRAM configuration has not been tested directly.
+Also verified on a Windows Shadow PC with 28 GB RAM, an NVIDIA RTX A4500 (20 GB VRAM), PyTorch `2.14.1+cu132`, and CUDA 13.2: the complete model loaded on `cuda:0` and completed the upstream warm-up with the memory-efficient initializer. Windows settings were unchanged. A small-model regression check confirmed exact checkpoint values, buffers, and forward outputs match the normal initializer, and initialization hooks restore after success and exceptions.
+
+During a running conversation, Pinokio's app counter reported 11.36 GB of VRAM for Haru. NVIDIA's `nvidia-smi` reported 13,593 MiB used across the whole GPU (13.27 GiB), including Windows, browsers, and other processes. These are live snapshots, not measured peaks. The 16 GB recommendation allows headroom based on these observations; 12 GB and 16 GB GPUs have not been tested directly. Windows VRAM measurements do not establish the Mac's unified-memory requirement.
 
 ## License
 
