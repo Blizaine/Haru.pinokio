@@ -1,0 +1,15 @@
+{
+  "title": "Haru",
+  "icon": "icon.png",
+  "platform": ["darwin", "win32", "linux"],
+  "arch": ["arm64", "x64"],
+  "gpu": ["apple", "nvidia"],
+  "description": "Low-latency, multilingual voice conversations with Haru-4B. Apple silicon Mac with 16 GB RAM, or Windows/Linux with NVIDIA CUDA and about 12 GB VRAM.",
+  "links": [{
+    "title": "Source",
+    "value": "https://github.com/higurashi-ai/Haru"
+  }, {
+    "title": "Model",
+    "value": "https://huggingface.co/higurashi-ai/Haru-4B"
+  }]
+}
