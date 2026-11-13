@@ -13,7 +13,8 @@ You can also use Pinokio's **Download from URL** with `https://github.com/cockta
 ## Requirements
 
 - **Apple silicon Mac:** macOS 13 or later and at least 16 GB of memory. Uses MLX inference with Haru's browser interface.
-- **Windows or Linux:** an NVIDIA CUDA GPU with about 12 GB of VRAM and a compatible NVIDIA driver. Uses the upstream PyTorch web demo. UV selects the PyTorch backend for the detected driver.
+- **Windows or Linux:** an NVIDIA CUDA GPU and a compatible NVIDIA driver. Upstream estimates about 12 GB of VRAM; that is a GPU-memory estimate, not the complete system-memory requirement or a verified minimum for this launcher. Uses the upstream PyTorch web demo. UV selects the PyTorch backend for the detected driver.
+- **System memory:** host RAM and virtual memory are also needed during model loading. The Windows path has been verified with 28 GB of RAM and the machine's existing system-managed paging file. The minimum host-memory requirement has not been measured.
 - Allow roughly 10 GB for the model, plus space for dependencies. Installation uses Pinokio's AI bundle and an isolated Python environment.
 - A microphone, headphones, and a reference voice clip: one speaker, 3 seconds to 3 minutes of clean speech. Haru ships without voice clips. Use a voice you have permission to use.
 
@@ -37,6 +38,8 @@ The web server binds to `127.0.0.1` on a port chosen by Pinokio. Use the display
 The web client is already bundled upstream, so Node.js and a frontend build are unnecessary. Optional public sharing, WebRTC, Triton kernels, and the separate vLLM deployment are not installed by this launcher.
 
 On Mac, `mlx-web.py` connects the upstream web server to the upstream MLX backend through their shared conversation API. Both Python packages are installed because the web server imports modules from the PyTorch package; model inference uses MLX. The upstream files are unchanged, and no native app build is needed.
+
+On Windows, `windows-web.py` initializes model parameters as empty placeholders until the checkpoint assigns their values. This avoids a temporary CPU allocation of about 19.6 GiB for Haru-4B, while keeping nonpersistent buffers initialized normally. It uses the existing dependencies and leaves Windows paging-file settings unchanged. Windows and Linux launch from `app/haru` so the editable package's bundled assets resolve correctly.
 
 ## Programmatic access
 
@@ -123,6 +126,7 @@ The upload returns a voice `id`, its duration, and whether it was trimmed. Use t
 - Launcher execution logs: `logs/`, including `logs/api/<script>/latest` and session logs.
 - Mac model logs are in the same Pinokio Start terminal as the web server.
 - Missing NVIDIA GPU or driver: check the install terminal's CUDA assertion and NVIDIA driver installation.
+- Missing `assets/card_templates.json`, or Windows paging-file error 1455 with an older launcher: click Update for the package-directory and Windows memory-loading fixes, then Start again.
 - Download errors: check access to Hugging Face, then restart. Downloads resume from the cache.
 - No default voice: upload or record your own reference clip; upstream intentionally ships none.
 
@@ -133,7 +137,9 @@ Verified on Apple silicon with Python 3.10 against Haru commit `d3612b02037d0f10
 - Pinokio Install, Reset, clean reinstall, and Update.
 - Real MLX model loading, reference upload, prompt preparation, and bidirectional WebSocket Opus audio: 11 returned chunks decoded to 34,560 finite samples (1.44 seconds), plus text, using synthetic input.
 - Static web client, nine language configurations, invalid request handling, platform command generation, menu states, and captured URL.
-- Windows and Linux CUDA dependency resolution in dry runs. GPU execution on those operating systems and live microphone capture were not tested on this Mac.
+- Windows and Linux CUDA dependency resolution in dry runs. Linux GPU execution and live microphone capture remain untested.
+
+Also verified on a Windows Shadow PC with 28 GB RAM, an NVIDIA RTX A4500 (20 GB VRAM), PyTorch `2.14.1+cu132`, and CUDA 13.2: the complete model loaded on `cuda:0` and completed the upstream warm-up with the memory-efficient initializer. Windows settings were unchanged. A small-model regression check confirmed exact checkpoint values, buffers, and forward outputs match the normal initializer, and initialization hooks restore after success and exceptions. The approximate 12 GB VRAM configuration has not been tested directly.
 
 ## License
 

@@ -8,7 +8,7 @@ module.exports = {
       env: {
         PYTHONUNBUFFERED: "1"
       },
-      message: "python {{platform === 'darwin' ? '../mlx-web.py' : '-m haru.server'}} --host 127.0.0.1 --port {{port}}",
+      message: "python {{platform === 'darwin' ? '../mlx-web.py' : platform === 'win32' ? '../../windows-web.py' : '-m haru.server'}} --host 127.0.0.1 --port {{port}}",
       on: [{
         event: "/(http:\\/\\/[0-9.:]+)/",
         done: true

@@ -2,7 +2,7 @@ module.exports = {
   version: "8.0.0",
   title: "Haru",
   icon: "icon.png",
-  description: "Full-duplex multilingual voice conversations. Apple silicon Mac (16 GB RAM), or Windows/Linux with NVIDIA CUDA (about 12 GB VRAM).",
+  description: "Haru-4B voice conversations in your browser. Apple silicon Mac or NVIDIA CUDA on Windows/Linux. See README for GPU and system memory requirements.",
   menu: async (kernel, info) => {
     let installed = info.exists("app/.installed")
     let running = {
