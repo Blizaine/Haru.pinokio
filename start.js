@@ -3,8 +3,8 @@ module.exports = {
   run: [{
     method: "shell.run",
     params: {
-      path: "app",
-      venv: "env",
+      path: "{{platform === 'darwin' ? 'app' : 'app/haru'}}",
+      venv: "{{platform === 'darwin' ? 'env' : '../env'}}",
       env: {
         PYTHONUNBUFFERED: "1"
       },
