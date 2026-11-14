@@ -7,7 +7,7 @@ module.exports = {
     method: "shell.run",
     params: {
       message: {
-        _: ["{{which('git')}}", "clone", "https://github.com/higurashi-ai/Haru", "app"]
+        _: ["{{which('git')}}", "clone", "https://github.com/Blizaine/Haru", "app"]
       }
     }
   }, {
